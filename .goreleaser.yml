@@ -1,0 +1,58 @@
+version: 2
+
+project_name: kerno
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: kerno
+    main: .
+    binary: kerno
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - id: kerno
+    formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
+
+release:
+  github:
+    owner: Raa-11
+    name: kerno
+  draft: false
+  prerelease: auto
+  name_template: "v{{ .Version }}"
+  footer: |
+    ## Install
+
+    ```bash
+    curl -L https://github.com/Raa-11/kerno/releases/latest/download/kerno_{{ .Version }}_linux_amd64.tar.gz | tar xz
+    sudo install kerno /usr/local/bin/
+    sudo kerno
+    ```

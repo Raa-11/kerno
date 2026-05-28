@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install eBPF build dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y clang llvm linux-headers-$(uname -r) libbpf-dev
+
+      - name: Generate eBPF bindings
+        run: go generate ./...
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test ./...

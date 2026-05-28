@@ -1,0 +1,13 @@
+# Binary
+kerno
+kerno-go
+
+# Claude Code
+CLAUDE.md
+
+# Go
+dist/
+
+# IDE
+.vscode/
+.idea/
